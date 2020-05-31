@@ -1,27 +1,14 @@
 #!usr/bin/python
 # -*- coding: utf-8 -*-import string
 
-import os
 import numpy as np
 import math
 
-import matplotlib.pyplot as plt
-import matplotlib.colors as cls
-
 import colormaps as cm
+import output
 
 OUTER_SUM = 'OUTER_SUM'
 INFLATION_TILING = 'INFLATION_TILING'
-
-def save_as_img(A, filename="tiling", cmapdim=3):
-	if not os.path.isdir('img'):
-		os.mkdir('img')
-	if cmapdim <= 3:
-		plt.imsave('img/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_3)
-		plt.imsave('img/'+filename+'_gs.png', A, cmap=cm.cmap_gs_3)
-	elif cmapdim <= 6:
-		plt.imsave('img/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_6)
-		plt.imsave('img/'+filename+'_gs.png', A, cmap=cm.cmap_gs_6)
 
 def update_outer_sum(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j):
 	x = r_x+d_x*a_x
@@ -103,7 +90,7 @@ def run(As, it, mod, stylecode='outsum', name=''):
 		return
 	
 	R = recursive_inflating(As, it, mod, style=style)
-	save_as_img(R, stylecode+"_"+name+"_mod"+str(mod)+"_it"+str(it), cmapdim=mod)
+	output.save_as_img(R, stylecode+"_"+name+"_mod"+str(mod)+"_it"+str(it), cmapdim=mod)
 	
 def run_all_auto(As, name='', stylecode='outsum'):
 		d_max = np.max([A.shape for A in As])
@@ -121,28 +108,10 @@ def run_all_auto(As, name='', stylecode='outsum'):
 		
 		for it in range(it_min, it_max+1):
 			R = recursive_inflating(As, it, mod=-1, style=style)
-			R_scaled = auto_upscale(R)
+			R_scaled = output.auto_upscale(R)
 			for mod in range(2, mod_max+1):
 				R_m = np.mod(R_scaled, mod)
-				save_as_img(R_m, stylecode+"_"+name+"_mod"+str(mod)+"_it"+str(it), cmapdim=mod)
-				
-def upscale(R, scale):
-	d_x, d_y = R.shape
-	R_scaled = np.zeros((d_x*scale, d_y*scale))
-	for r_x in range(d_x):
-		for r_y in range(d_y):
-			for a_x in range(scale):
-				for a_y in range(scale):
-					R_scaled[r_x*scale+a_x][r_y*scale+a_y] = R[r_x][r_y]
-	return R_scaled
+				output.save_as_img(R_m, stylecode+"_"+name+"_mod"+str(mod)+"_it"+str(it), cmapdim=mod)
 
-def auto_upscale(R):
-	x,y = R.shape
-	d_max = max(x,y)
-	if d_max > 2000:
-		return R
-	else:
-		return upscale(R, 1+2000//d_max)
-	
 if __name__ == '__main__':
 	print ('hello world')
