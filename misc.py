@@ -20,3 +20,11 @@ ofscodes = {
 	OFFSET_PIXEL : 'ofs-pxl',
 	OFFSET_NONE  : 'ofs-non'
 }
+
+OFM_PAR = 'OFMODE_PARALLEL'
+OFM_ORT = 'OFMODE_ORTHOGONAL'
+
+ofmmodes = {
+	OFM_PAR : 'ofm-par',
+	OFM_ORT : 'ofm-ort'
+}

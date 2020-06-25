@@ -18,41 +18,53 @@ import misc
 
 # return the position x,y and a value r
 
-def update_outer_sum(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j, shift_x=0, shift_y=0):
+def update_outer_sum(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j, shift_x=0, shift_y=0, offset_mode=misc.OFM_PAR):
 	# unshifted position:
 	x = r_x + d_x*a_x
 	y = r_y + d_y*a_y
 	# shifted position:
-	x_shift = (r_x+shift_x*a_x)%d_x + d_x*a_x
-	y_shift = (r_y+shift_y*a_y)%d_y + d_y*a_y
+	if offset_mode == misc.OFM_PAR:
+		x_shift = (r_x+shift_x*a_x)%d_x + d_x*a_x
+		y_shift = (r_y+shift_y*a_y)%d_y + d_y*a_y
+	else:
+		x_shift = (r_x+shift_x*a_y)%d_x + d_x*a_x
+		y_shift = (r_y+shift_y*a_x)%d_y + d_y*a_y
 	# value:
 	r = R[r_x][r_y] + As[j][a_x][a_y]
 	return x_shift, y_shift, r
 	
-def update_tiling(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j=None, shift_x=0, shift_y=0):
+def update_tiling(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j=None, shift_x=0, shift_y=0, offset_mode=misc.OFM_PAR):
 	# unshifted position:
 	x = r_x*d_x + a_x
 	y = r_y*d_y + a_y
 	# shifted position:
-	x_shift = r_x*d_x + ((a_x+shift_x*r_x)%d_x)
-	y_shift = r_y*d_y + ((a_y+shift_y*r_y)%d_y)
+	if offset_mode == misc.OFM_PAR:
+		x_shift = r_x*d_x + ((a_x+shift_x*r_x)%d_x)
+		y_shift = r_y*d_y + ((a_y+shift_y*r_y)%d_y)
+	else:
+		x_shift = r_x*d_x + ((a_x+shift_x*r_y)%d_x)
+		y_shift = r_y*d_y + ((a_y+shift_y*r_x)%d_y)
 	# value:
 	r = As[int(R[r_x][r_y])][a_x][a_y]
 	return x_shift, y_shift, r
 	
-def update_repetition(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j=None, shift_x=0, shift_y=0):
+def update_repetition(R, r_x, r_y, As, a_x, a_y, d_x, d_y, j=None, shift_x=0, shift_y=0, offset_mode=misc.OFM_PAR):
 	# unshifted position:
 	x = r_x + d_x*a_x
 	y = r_y + d_y*a_y
 	# shifted position:
-	x_shift = (r_x+shift_x*a_x)%d_x+d_x*a_x
-	y_shift = (r_y+shift_y*a_y)%d_y+d_y*a_y
+	if offset_mode == misc.OFM_PAR:
+		x_shift = (r_x+shift_x*a_x)%d_x+d_x*a_x
+		y_shift = (r_y+shift_y*a_y)%d_y+d_y*a_y
+	else:
+		x_shift = (r_x+shift_x*a_y)%d_x+d_x*a_x
+		y_shift = (r_y+shift_y*a_x)%d_y+d_y*a_y
 	# value:
 	r = R[r_x][r_y]
 	return x_shift, y_shift, r
 	
 ### The recursive inflation algorithm:
-def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE):
+def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, offset_mode=misc.OFM_PAR):
 	'''
 	Args:
 		As  : list of matrices
@@ -66,6 +78,9 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 			misc.OFFSET_NONE
 			misc.OFFSET_BLOCK
 			misc.OFFSET_PIXEL
+		offset_mode : one of
+			misc.OFM_PAR
+			misc.OFM_ORT
 	'''
 	if isinstance(it, int):
 		multiit = False
@@ -122,6 +137,7 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 		d_total_x *= d_x
 		d_total_y *= d_y
 		
+		# construct shift values:
 		if offset == misc.OFFSET_BLOCK:
 			if style == misc.EXP_REPETITION:
 				shift_dx = max(1, i*d_x)
@@ -143,6 +159,9 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 		if i == 0:
 			shift_dx = 0
 			shift_dy = 0
+		# in case of orthogonal shift, switch shift values for x and y directions:
+		if offset_mode == misc.OFM_ORT:
+			shift_dx, shift_dy = shift_dy, shift_dx
 		
 		R_it = np.zeros((d_total_x, d_total_y))
 		for a_x in range(d_x):
@@ -150,7 +169,7 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 				for r_x in range(d_it_x):
 					for r_y in range(d_it_y):
 						# compute value and shifted coordinates:
-						x,y,r = update(R, r_x, r_y, As, a_x, a_y, d_block_x, d_block_y, i%m, shift_dx, shift_dy)
+						x,y,r = update(R, r_x, r_y, As, a_x, a_y, d_block_x, d_block_y, i%m, shift_dx, shift_dy, offset_mode=offset_mode)
 						R_it[x][y] = r
 		R = R_it
 		if multiit and i in it:

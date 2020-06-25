@@ -43,5 +43,9 @@ def auto_upscale(A, n_max=2000):
 	else:
 		return upscale(A, 1+n_max//d_max)
 		
-def construct_filename(name, style, offset, mod, it):
-	return misc.expcodes[style]+"_"+misc.ofscodes[offset]+"_"+name+"_mod"+str(mod)+"_it"+str(it)
+def construct_filename(name, style, offset, offset_mode, mod, it):
+	if not offset == misc.OFFSET_NONE:
+		of_string = misc.ofscodes[offset]+"_"+misc.ofmmodes[offset_mode]
+	else:
+		of_string = misc.ofscodes[offset]
+	return name+"_"+misc.expcodes[style]+"_"+of_string+"_mod"+str(mod)+"_it"+str(it)

@@ -11,31 +11,33 @@ A1 = np.asarray([[1,0],[0,0]])
 A2 = np.asarray([[0,0],[0,1]])
 
 if __name__ == '__main__':
-	it = [3,4,5,6]
+	it  = [2, 3, 4, 5, 6]
 	mod = [2, 3, 4, 5, 6]
 	for style in misc.expcodes:
 		for ofs in misc.ofscodes:
-			if not style == misc.EXP_OUTER_SUM:
-				this_mod = 2
-			else:
-				this_mod = mod
-			if style == misc.EXP_OUTER_SUM or not ofs == misc.OFFSET_BLOCK:
-				# compute recursive inflation,
-				# leave out redundant combinations of inflations and offsets
-				# NOTE: these conditions depend on the matrices A1, A2 !!!
-
-				print ('Style: '+misc.expcodes[style])
-				print ('Offset: '+misc.ofscodes[ofs])
-				Rs = rs.recursive_inflating([A1, A2], it=it, mod=this_mod, style=style, offset=ofs)
-				for R_data in Rs:
-					# todo: parallelize this loop
-					i = R_data['it']
-					m = R_data['mod']
-					R = R_data['R']
-					print ('\t i: ',i, ', m: ', m)
-					R_scaled = output.auto_upscale(R)
-					if m > 2:
-						output.save_as_img(R_scaled, output.construct_filename('test', style, ofs, m, i), cmapdim=m, dirname='test')
-					else:
-						output.save_as_img(R_scaled, output.construct_filename('test', style, ofs, m, i), cmapdim=m, dirname='test', col=False)
+			for ofm in misc.ofmmodes:
+				if not style == misc.EXP_OUTER_SUM:
+					this_mod = 2
+				else:
+					this_mod = mod
+				if style == misc.EXP_OUTER_SUM or not ofs == misc.OFFSET_BLOCK:
+					# compute recursive inflation,
+					# leave out redundant combinations of inflations and offsets
+					# NOTE: these conditions depend on the matrices A1, A2 !!!
+	
+					print ('Style: '+misc.expcodes[style])
+					print ('Offset: '+misc.ofscodes[ofs])
+					print ('Offset-mode: '+misc.ofmmodes[ofm])
+					Rs = rs.recursive_inflating([A1, A2], it=it, mod=this_mod, style=style, offset=ofs, offset_mode=ofm)
+					for R_data in Rs:
+						# todo: parallelize this loop
+						i = R_data['it']
+						m = R_data['mod']
+						R = R_data['R']
+						print ('\t i: ',i, ', m: ', m)
+						R_scaled = output.auto_upscale(R)
+						if m > 2:
+							output.save_as_img(R_scaled, output.construct_filename('example', style, ofs, ofm, m, i), cmapdim=m, dirname='basic_examples')
+						else:
+							output.save_as_img(R_scaled, output.construct_filename('example', style, ofs, ofm, m, i), cmapdim=m, dirname='basic_examples', col=False)
 	
