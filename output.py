@@ -6,18 +6,23 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
+import misc
 import colormaps as cm
 
-def save_as_img(A, filename="tiling", cmapdim=3, dirname='img'):
+def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=True, col=True):
 	dirname = str(dirname)
 	if not os.path.isdir(dirname):
 		os.mkdir(dirname)
 	if cmapdim <= 3:
-		plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_3)
-		plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap_gs_3)
+		if col:
+			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_3)
+		if bw:
+			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap_gs_3)
 	elif cmapdim <= 6:
-		plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_6)
-		plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap_gs_6) 
+		if col:
+			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_6)
+		if bw:
+			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap_gs_6) 
 		
 
 def upscale(R, scale):
@@ -37,3 +42,6 @@ def auto_upscale(A, n_max=2000):
 		return A
 	else:
 		return upscale(A, 1+n_max//d_max)
+		
+def construct_filename(name, style, offset, mod, it):
+	return misc.expcodes[style]+"_"+misc.ofscodes[offset]+"_"+name+"_mod"+str(mod)+"_it"+str(it)
