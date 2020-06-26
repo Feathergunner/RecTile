@@ -98,6 +98,7 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 		else:
 			do_mod = False
 	
+	dx_A, dy_A = As[0].shape
 	d_total_x = 1
 	d_total_y = 1
 	R = np.zeros((d_total_x, d_total_y))
@@ -106,12 +107,12 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 		update = update_outer_sum
 	elif style == misc.EXP_INFLATION:
 		update = update_tiling
-		d_x, d_y = As[0].shape
+		d_x, d_y = dx_A, dy_A
 		d_block_x = d_x
 		d_block_y = d_y
 	else:
 		update = update_repetition
-		d_x, d_y = As[0].shape
+		d_x, d_y = dx_A, dy_A
 		d_total_x = d_x
 		d_total_y = d_y
 		R = As[0]
@@ -152,11 +153,17 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 		elif offset == misc.OFFSET_PIXEL:
 			shift_dx = 1
 			shift_dy = 1
+		elif offset == misc.OFFSET_LINEAR:
+			shift_dx = i+1
+			shift_dy = i+1
+		elif offset == misc.OFFSET_EXPON:
+			shift_dx = dx_A**i
+			shift_dy = dy_A**i
 		else:
 			shift_dx = 0
 			shift_dy = 0
 		
-		if i == 0:
+		if i == 0 and not style == misc.EXP_REPETITION:
 			shift_dx = 0
 			shift_dy = 0
 		# in case of orthogonal shift, switch shift values for x and y directions:
