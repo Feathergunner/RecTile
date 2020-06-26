@@ -20,7 +20,7 @@ if __name__ == '__main__':
 					this_mod = 2
 				else:
 					this_mod = mod
-				if style == misc.EXP_OUTER_SUM or not ofs == misc.OFFSET_BLOCK:
+				if not (ofm == misc.OFM_ORT and (style == misc.EXP_OUTER_SUM or style == misc.OFFSET_NONE)):
 					# compute recursive inflation,
 					# leave out redundant combinations of inflations and offsets
 					# NOTE: these conditions depend on the matrices A1, A2 !!!
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 						m = R_data['mod']
 						R = R_data['R']
 						print ('\t i: ',i, ', m: ', m)
-						R_scaled = output.auto_upscale(R)
+						R_scaled = output.auto_upscale(R, 500)
 						if m > 2:
 							output.save_as_img(R_scaled, output.construct_filename('example', style, ofs, ofm, m, i), cmapdim=m, dirname='basic_examples')
 						else:
