@@ -1,6 +1,8 @@
 #!usr/bin/python
 # -*- coding: utf-8 -*-import string
 
+import math
+import numpy as np
 import matplotlib.pyplot as plt
 
 import geometric_tilings as gt
@@ -22,18 +24,19 @@ def triangles():
 	p2 = gt.Point(100, 0)
 	p3 = gt.Point(50,86)
 	
-	triangle = Structure([p1, p2, p3])
+	triangle = gt.Structure([p1, p2, p3])
 	submat=[[0,0,0,0]]
+	substates = [[1,0,0,0]]
 	subpoints=[[[[1, 0, 0],[0.5, 0.5, 0],[0.5, 0, 0.5]],[[0.5, 0.5, 0],[0,1,0], [0, 0.5, 0.5]],[[0.5, 0, 0.5],[0, 0.5, 0.5],[0,0,1]],[[0, 0.5, 0.5],[0.5, 0., 0.5],[0.5, 0.5, 0]]]]
-	t = gt.Tiling(triangle, submat, subpoints)
-	t.draw(depth=5, filename='geometric_tilings/test_triangle_1.png')
+	t = gt.Tiling(triangle, submat, subpoints, substates)
+	t.draw(depth=6, filename='geometric_tilings/test_triangle_c2.png', fill=True)
 	
 def triangles_2():
 	p1 = gt.Point(0,0)
 	p2 = gt.Point(100, 0)
 	p3 = gt.Point(50,86)
 	
-	eps = 0.05
+	eps = 0.02
 	
 	sp1 = [1,0,0]
 	sp2 = [0.5-eps, 0.5-eps, 2*eps]
@@ -42,22 +45,16 @@ def triangles_2():
 	sp5 = [0, 1, 0]
 	sp6 = [0, 0, 1]
 	
-	triangle = Structure([p1, p2, p3])
+	triangle = gt.Structure([p1, p2, p3])
 	submat=[[0,0,0,0]]
+	substates = [[1,1,1,2]]
 	subpoints=[[
 		[sp1, sp2, sp3],
 		[sp2, sp5, sp4],
 		[sp3, sp4, sp6],
 		[sp4, sp3, sp2]]]
-	t = gt.Tiling(triangle, submat, subpoints)
-	t.draw(depth=5, filename='geometric_tilings/test_triangles_2_e'+str(eps)+'.png')
-	
-	
-	subpoints=[[
-		[sp1, sp2, sp3],
-		[sp2, sp1, sp4],
-		[sp3, sp4, sp1],
-		[sp4, sp3, sp2]]]
+	t = gt.Tiling(triangle, submat, subpoints, substates)
+	t.draw(depth=7, filename='geometric_tilings/test_triangles_2_c1_e'+str(eps)+'.png', fill=True)
 	
 def rectangles():
 	p1 = gt.Point (0, 0)
@@ -65,9 +62,9 @@ def rectangles():
 	p3 = gt.Point (100,100)
 	p4 = gt.Point (100, 0)
 	
-	eps = -0.02
+	eps = 0.0
 	
-	rectangle = Structure([p1,p2,p3,p4])
+	rectangle = gt.Structure([p1,p2,p3,p4])
 	# 0: rectangle
 	# 1: triangle
 	# rectangle is split into four triangles (in the corners) and a rectangle in the center (rotated 45° to the initial rectangle)
@@ -92,15 +89,16 @@ def rectangles():
 		[[0, 1, 0], [0.5, 0.5, 0], [0, 0.5, 0.5]], # second triangle
 		[[0,0,1], [0, 0.5, 0.5], [0.5, 0.5, 0], [0.5, 0., 0.5]] # rectangle
 		]]
-	t = gt.Tiling(rectangle, submat, subpoints)
-	t.draw(depth=7, filename='geometric_tilings/test_rect_triang_e'+str(eps)+'.png')
+	substates = [[0,0,0,0,1],[0,0,1]]
+	t = gt.Tiling(rectangle, submat, subpoints, substates)
+	t.draw(depth=7, fill=True, filename='geometric_tilings/test_rect_triang_c2_e'+str(eps)+'.png')
 	
 def snowflake():
 	p1 = gt.Point(0,0)
 	p2 = gt.Point(100, 0)
 	p3 = gt.Point(50,86)
 	
-	triangle = Structure([p1, p2, p3])
+	triangle = gt.Structure([p1, p2, p3])
 	submat=[[1,1,1],[1,1]]
 	subpoints=[[ # substructures of initial triangle:
 	[[1/3, 2/3, 0],[2/3, 1/3, 0],[2/3, 2/3, -1/3]],
@@ -131,7 +129,7 @@ def chair_tiling():
 	p5 = gt.Point(50,100)
 	p6 = gt.Point(0,100)
 	
-	chair = Structure([p1,p2,p3,p4,p5,p6])
+	chair = gt.Structure([p1,p2,p3,p4,p5,p6])
 	p1 = [1, 0, 0, 0, 0, 0]
 	p2 = [0, 1, 0, 0, 0, 0]
 	p3 = [0, 0, 1, 0, 0, 0]
@@ -154,21 +152,23 @@ def chair_tiling():
 	[p6, s4, s9, s8, s3, p5],
 	[s5, s7, s2, p4, s3, s8]
 	]]
-	t = gt.Tiling(chair, submat, subpoints)
-	t.draw(depth=6, filename='geometric_tilings/chair_1.png')
+	substates = [[0, 1, 0, 2]]
+	t = gt.Tiling(chair, submat, subpoints, substates)
+	t.draw(depth=6, filename='geometric_tilings/chair_1_c2.png', only_last_it=True, fill=True)
 	
 def rhombs_1():
-	a = 36.3*1.1
-	b = 50*1.1
-	p1 = gt.Point(b, 50-a)
-	p2 = gt.Point(2*b, 50)
-	p3 = gt.Point(b, 50+a)
-	p4 = gt.Point(0, 50)
-	
+	b = 50
+	a = b*math.tan(math.pi/5)
 	c = (b**2 - a**2)/(2*a)
 	d = ((a+c)*a)/(2*b)
+	#print (a,b,c,d)
 	
-	bigrhomb = Structure([p1, p2, p3, p4], state=0)
+	p1 = gt.Point(b, b-a)
+	p2 = gt.Point(2*b, b)
+	p3 = gt.Point(b, b+a)
+	p4 = gt.Point(0, b)
+	
+	bigrhomb = gt.Structure([p1, p2, p3, p4], type=0)
 	
 	eps = 0.1
 	b_p1 = [1, 0, 0, 0]
@@ -183,7 +183,7 @@ def rhombs_1():
 	
 	e = (a-c)/2
 	f = (b-d)-((e*b)/a)
-	smallrhomb = Structure([gt.Point(0,b-d), gt.Point(-e, 0), gt.Point(0,-b+d), gt.Point(e,0)], state=1)
+	smallrhomb = gt.Structure([gt.Point(0,b-d), gt.Point(-e, 0), gt.Point(0,-b+d), gt.Point(e,0)], type=1)
 	
 	s_p1 = [1, 0, 0, 0]
 	s_p2 = [0, 1, 0, 0]
@@ -196,7 +196,6 @@ def rhombs_1():
 	s_s4 = [1-(e*b)/(a*(b-d)), 0, (e*b)/(a*(b-d)), 0]
 		
 	submat = [[0,0,0,1],[0,1,1]]
-	#submat = [[0,0,0],[0,1,1]]
 	subpoints = [
 	[
 	[b_s1, b_p2, b_s2, b_s5],
@@ -208,9 +207,55 @@ def rhombs_1():
 	[s_s1, s_p2, s_s2, s_s4],
 	[s_s2, s_p4, s_s3, s_s4]
 	]]
-	t = gt.Tiling(bigrhomb, submat, subpoints)
-	t.draw(depth=7, only_last_it=True, filename='geometric_tilings/rhombtest_2.png')
 	
+	substates=[[1,0,1,0],[1,0,0]]
+	
+	#t = gt.Tiling(bigrhomb, submat, subpoints, substates)
+	#t.draw(depth=3, only_last_it=True)#, filename='geometric_tilings/rhombs_c1.png', fill=True)
+	
+	# the full star:
+	base = [p1, p2, p3, p4]
+	origin=(p2.x, p2.y)
+	points = [p4, p1]
+	for i in range(1,5):
+		#new_points = [p1]
+		for j in [3,0]:
+			px, py = gt.rotate(origin, (base[j].x, base[j].y), (2*i/5)*math.pi)
+			points.append(gt.Point(px, py))
+
+	# TODO
+	c =   np.array([1,0, 1,0, 1,0, 1,0, 1,0])*0.2
+	p11 = [0,0, 0,0, 0,0, 0,0, 0,1]
+	p13 = [0,1, 0,0, 0,0, 0,0, 0,0]
+	p14 = [1,0, 0,0, 0,0, 0,0, 0,0]
+	p21 = [0,1, 0,0, 0,0, 0,0, 0,0]
+	p23 = [0,0, 0,1, 0,0, 0,0, 0,0]
+	p24 = [0,0, 1,0, 0,0, 0,0, 0,0]
+	p31 = [0,0, 0,1, 0,0, 0,0, 0,0]
+	p33 = [0,0, 0,0, 0,1, 0,0, 0,0]
+	p34 = [0,0, 0,0, 1,0, 0,0, 0,0]
+	p41 = [0,0, 0,0, 0,1, 0,0, 0,0]
+	p43 = [0,0, 0,0, 0,0, 0,1, 0,0]
+	p44 = [0,0, 0,0, 0,0, 1,0, 0,0]
+	p51 = [0,0, 0,0, 0,0, 0,1, 0,0]
+	p53 = [0,0, 0,0, 0,0, 0,0, 0,1]
+	p54 = [0,0, 0,0, 0,0, 0,0, 1,0]
+	#print(len(points))
+	star = gt.Structure(points, type=2)
+	
+	submat.append([0,0,0,0,0])
+	subpoints.append([
+	[p11, c, p13, p14],
+	[p21, c, p23, p24],
+	[p31, c, p33, p34],
+	[p41, c, p43, p44],
+	[p51, c, p53, p54],
+	])
+	substates.append([0,0,0,0,0])
+	
+	t = gt.Tiling(star, submat, subpoints, substates)
+	t.draw(depth=7, only_last_it=True, filename='geometric_tilings/rhombs_circular.png')#, fill=True)
 	
 if __name__ == '__main__':
-	rhombs_1()
+	
+	rectangles()

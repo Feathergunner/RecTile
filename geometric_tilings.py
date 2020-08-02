@@ -131,10 +131,10 @@ class Tiling:
 						if current_struct.state%3 == 0:
 							c = 'r'
 						elif current_struct.state%3 == 1:
-							c = 'g'
+							c = 'y'
 						else:
 							c = 'b'
-						current_struct.draw(fill=c)
+						current_struct.draw(fill=c)#, color=None)
 					else:
 						current_struct.draw()
 				# construct child structures:
