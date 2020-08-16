@@ -223,7 +223,6 @@ def rhombs_1():
 			px, py = gt.rotate(origin, (base[j].x, base[j].y), (2*i/5)*math.pi)
 			points.append(gt.Point(px, py))
 
-	# TODO
 	c =   np.array([1,0, 1,0, 1,0, 1,0, 1,0])*0.2
 	p11 = [0,0, 0,0, 0,0, 0,0, 0,1]
 	p13 = [0,1, 0,0, 0,0, 0,0, 0,0]
@@ -256,6 +255,124 @@ def rhombs_1():
 	t = gt.Tiling(star, submat, subpoints, substates)
 	t.draw(depth=7, only_last_it=True, filename='geometric_tilings/rhombs_circular.png')#, fill=True)
 	
+def penrose():
+	#         x
+	#        / \
+	#       c   d
+	#     x1 __  \
+	#   a /    c--x2
+	#    /       , \
+	#   /   ,b-´    e
+	#  /,-´´         \
+	# x-------b-------x
+	#
+	# (a is the full length of the long sides)
+	#
+	#
+	#
+	#      f    ,- x -.
+	#        ,-´    \   `-.  f
+	#    ,-´         \     `-.
+	#  x -------f--- x3 --g-- x
+	#
+	# (the center diagonal also has length g) 
+	
+	
+	def get_length_big(a):
+		b = a * (math.sin(math.pi/5))/(math.sin(2*math.pi/5))
+		c = a-b
+		d = c * (math.sin(3*math.pi/5))/(math.sin(math.pi/5))
+		e = a-d
+		return b,c,d,e
+	
+	def get_h(f):
+		g = f*(math.sin(math.pi/5))/(math.sin(2*math.pi/5))
+		return g
+	
+	a = 50
+	
+	# the initial structure: a regular decadon of 10 big triangles centered at 0
+	p0 = gt.Point(50,50)
+	points = [p0]
+	for i in range(10):
+		xi = 50+math.cos(i*math.pi/5) * a
+		yi = 50+math.sin(i*math.pi/5) * a
+		points.append(gt.Point(xi, yi))
+		#print(str(points[-1]))
+		
+	# struct 1: big Triangle
+	# struct 2: small triangle
+	# struct 3: decadon
+	
+	ratio = (math.sin(math.pi/5))/(math.sin(2*math.pi/5))
+	p1 = [1, 0, 0]
+	p2 = [0, 1, 0]
+	p3 = [0, 0, 1]
+	bigT = gt.Structure([points[1], points[2], points[0]])
+	
+	submat_bigT = [0,0,1]
+	x1 = [1-ratio, 0, ratio]
+	x2 = [0, ratio, 1-ratio]
+	subpoints_bigT = [
+		[p2, x2, p1],
+		[x1, x2, p1],
+		[p3, x2, x1]
+	]
+	substates_bigT = [0,1,1]
+	
+	submat_smallT = [0,1]
+	x3 = [1-ratio, ratio, 0]
+	#subpoints_smallT = [
+	#	[p1, p3, x3],
+	#	[x3, p3, p2]
+	#]
+	subpoints_smallT = [
+		[x3, p3, p1],
+		[p2, p3, x3]
+	]
+	substates_smallT = [0,0]
+		
+	decadon = gt.Structure(points[1:], type = 2)
+	submat_decadon = [0,0,0,0,0,0,0,0,0,0]
+	
+	c = np.ones(10)*0.1
+	p01 = [1,0,0,0,0, 0,0,0,0,0]
+	p02 = [0,1,0,0,0, 0,0,0,0,0]
+	p03 = [0,0,1,0,0, 0,0,0,0,0]
+	p04 = [0,0,0,1,0, 0,0,0,0,0]
+	p05 = [0,0,0,0,1, 0,0,0,0,0]
+	p06 = [0,0,0,0,0, 1,0,0,0,0]
+	p07 = [0,0,0,0,0, 0,1,0,0,0]
+	p08 = [0,0,0,0,0, 0,0,1,0,0]
+	p09 = [0,0,0,0,0, 0,0,0,1,0]
+	p10 = [0,0,0,0,0, 0,0,0,0,1]
+	subpoints_decadon = [
+		[p01, p02, c],
+		[p03, p02, c],
+		[p03, p04, c],
+		[p05, p04, c],
+		[p05, p06, c],
+		[p07, p06, c],
+		[p07, p08, c],
+		[p09, p08, c],
+		[p09, p10, c],
+		[p01, p10, c]
+	]
+	substates_decadon = np.zeros(10)
+	
+	submat = [submat_bigT, submat_smallT, submat_decadon]
+	subpoints = [subpoints_bigT, subpoints_smallT, subpoints_decadon]
+	substates = [substates_bigT, substates_smallT, substates_decadon]
+	
+	t = gt.Tiling(decadon, submat, subpoints, substates)
+	t.draw(depth=6, only_last_it=True)
+	
+	#for d in [4,5,6,7,8]:
+	#	t = gt.Tiling(decadon, submat, subpoints, substates)
+	#	t.draw(depth=d, only_last_it=True, filename='geometric_tilings/penrose_'+str(d)+'_c5.png', fill=True)
+	
 if __name__ == '__main__':
 	
-	rectangles()
+	#rectangles()
+	
+	penrose()
