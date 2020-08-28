@@ -1,0 +1,426 @@
+\documentclass[a4paper,11pt]{article}
+% the report class allows you to use chapters as a super-section as is the best option for a thesis
+% each chapter will start on a new page
+% for smaller documents, like handouts or a seminar work, the basic article is fine too
+
+% LAYOUT & FORMATTING ----------------------------------
+% adjust the geometry of the page, s.t. more text fits on less pages ;)
+\usepackage{geometry}
+\geometry{a4paper, top=25mm, left=35mm, right=20mm, bottom=25mm, headsep=10mm, footskip=12mm}
+% general symbol encoding stuff, so you need less special commands for symbols that are already on the keyboard
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% hyperref is always nice to have (clickable links), but I don't like the colored boxes everywhere in the text
+\usepackage[hidelinks]{hyperref}
+
+% more option on image placement
+\usepackage{float}
+
+% enforces some specific way of optimizing whitespace (? not sure anymore what this does exactly)
+\frenchspacing
+% ------------------------------------------------------
+
+% FANCY HEADER -----------------------------------------
+\usepackage{fancyhdr}
+% define custom pageheader and pagefoot
+% plain: totally empty, used when no header is wanted
+\fancypagestyle{plain}{
+	\fancyhf{}
+	\fancyhead[LE,RO]{\thepage}
+	\fancyfoot[LE,RO]{\thepage}
+}
+\pagestyle{plain}
+% ------------------------------------------------------
+
+% TABLES OF CONTENTS -----------------------------------
+% depth of table of contents
+% (ie the max depth of the sub-sub-section-tree that is shown in the table of contents)
+\setcounter{tocdepth}{1}
+
+% basic style for biliography:
+\bibliographystyle{plain}
+% ------------------------------------------------------
+
+% TABLES -----------------------------------------------
+% stuff to optimize tables:
+\usepackage[table, dvipsnames]{xcolor}
+% longtables can span multiple pages, and they have their header repeated each page
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{colortbl}
+% ------------------------------------------------------
+
+% MATHTOOLS --------------------------------------------
+% commands to display formulas and a large variety of mathematical symbols
+\usepackage{bbm}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{thmtools}
+
+\usepackage{mathabx}
+% ------------------------------------------------------
+
+% AMSTHM -----------------------------------------------
+% a very plain style for definitions, theorems etc.
+\newtheoremstyle{mystyle}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {\itshape}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+% some custom 'theorem'-like environments that each get their own counter  
+\theoremstyle{mystyle}
+\newtheorem{exmp}{Example}
+\newtheorem{theo}{Theorem}
+\newtheorem{lemm}{Lemma}
+\newtheorem{defn}{Definition}
+\newtheorem{prob}{Problem}
+\newtheorem{algo}{Algorithm}
+\newtheorem{ass}{Assumption}
+\newtheorem{obs}{Observation}
+% ------------------------------------------------------
+
+% IMAGES AND PLOTS -------------------------------------
+% to display images and self-defined graphs
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{patterns, snakes, shapes.misc, positioning}
+% with subcaption, one can use subfigures, i.e. "Figure 2a"
+\usepackage{subcaption}
+% ------------------------------------------------------
+
+% CODE AND PSEUDO-CODE ---------------------------------
+% algorithm2e is a nice package for peudo-code
+\usepackage[ruled,linesnumbered,dotocloa]{algorithm2e}
+% 'real' code can be displayed with listing
+\usepackage{listings}
+% ------------------------------------------------------
+
+% COMMANDS ---------------------------------------------
+% custom commands, so one does not have to type the whole word every time :)
+\newcommand{\dref}[1]{Definition~\ref{#1}}
+\newcommand{\lref}[1]{Lemma~\ref{#1}}
+\newcommand{\eref}[1]{Equation~\ref{#1}}
+\newcommand{\exref}[1]{Example~\ref{#1}}
+\newcommand{\fref}[1]{Figure~\ref{#1}}
+\newcommand{\sref}[1]{Section~\ref{#1}}
+\newcommand{\cref}[1]{Chapter~\ref{#1}}
+\newcommand{\aref}[1]{Algorithm~\ref{#1}}
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+
+% shorthands for common useds stuff thats difficult to type
+\newcommand{\shortwlog}{w.\,l.\,o.\,g.\ }
+\newcommand{\ie}{i.\,e.\ }
+\newcommand{\st}{s.\,t.\ }
+\newcommand{\eg}{e.\,g.\ }
+\newcommand{\iid}{i.\,i.\,d.\ }
+\newcommand{\etal}{et al.\ }
+
+\newcommand{\transp}{^\mathsf{T}}
+
+% META COMMANDS ----------------------------------------
+\newcommand{\cn}{\footnote{Citation Needed}}
+% ------------------------------------------------------
+
+\title{RecTiles}
+\author{Andreas Goral}
+\begin{document}
+%\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+\textsc{
+{\huge Recursive Tiling}}\\[1cm]
+%\vfill
+%Copyright (c) 2020 Andreas Goral
+\end{center}
+%\end{titlepage}
+\tableofcontents
+\newpage
+\section{Basics}
+Aim of this document is to describe recursive algorithms to construct arbitrary big matrices $A^\star \in \{0,\dots, k^\star\}^{n^\star \times m^\star}$ from one (or more) significantly smaller matrices $A_0, \dots, A_\ell$ with $A_i \in \{0, \dots ,k_i\}^{n_i \times m_i}$.
+
+In general, we will have $k_i = k_j \leq k^\star$, $n_i = n_j$ and $m_i = m_j ~ \forall i, j$. 
+
+After constructing $A^\star$, we use a mapping from $\{0, \dots, k^\star\}$ to a set of colors and save the matrix as an image.
+
+\section{Notation}
+\begin{itemize}
+	\item As noted above, $A_0, \dots, A_i, \dots, A_\ell$ are the base matrices that are the input to our algorithms. $n_i$ and $m_i$ are the corresponding dimensions of matrix $A_i$.
+	\item In constrast, $A^{(i)}$ will describe the matrix we have at the $i$-th iteration of the algorithm. Consequently, $n^{(i)}$ and $m^{(i)}$ are the dimensions of $A^{(i)}$.
+	\item In order to not confuse the indices of a matrix from a set of matrices (\eg $A_i$ from $A_0, \dots, A_k$) with the indices of the elements of $A_i$, we will sometimes use the programming-language-inspired notation of $A_i\left[x,y\right]$ to identify the element at position $x,y$ of matrix $A_i$.
+\end{itemize}
+
+\section{Recursive Tiling}
+This approach is inspired by \cite{BaakeG13} (see Chapter 6, Figure 6.25, it's called \emph{block inflation} there).
+The basic idea is as follows: we have the slightly stronger requirements $n := n_i = n_j , m := m_i=m_j \forall i,j$ and $\ell = k_i = k^\star ~ \forall i$, \ie all base matrices $A_i$ have the same size and there are exactly as many base matrices as there are possible different matrix elements.
+
+\subsection{A recursive tiling step using inflation tiling}
+We start with an arbitrary matrix $A^{(0)} \in \{0, \dots, k^\star\}^{n_0 \times m_0}$ (\eg we can use $A^{(0)} = A_0$).
+Then, in iteration $i$, $A^{(i+1)}$ is constructed from $A^{(i)}$ by repacing each entry $a_{x,y}$ of $A^{(i)}$ by the base matrix $A_{a_{x,y}}$.
+Thus, $A^{(i+1)}$ is a block matrix of $n^{(i)} \times m^{(i)}$ many blocks $B_{x,y}$ of size $n \times m$ each that is conform to the following simple rule:
+\begin{align*}
+	B_{x,y} = A_j \Leftrightarrow A^{(i)}_{x,y} = j.
+\end{align*}
+%for each entry in $A^{(i)}$.% Therefore, if $A^{(i)}$ has size $n^{(i)}} \times m^{(i)}$
+
+\begin{exmp}\label{ex1}
+Let
+\begin{align*}
+A_0 = \begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix},\\
+A_1 = \begin{pmatrix}
+0 & 1\\
+1 & 0
+\end{pmatrix}
+\end{align*}
+and $A^{(0)} = A_0$. Then after one iteration, we have
+\begin{align*}
+A^{(1)} & = \begin{pmatrix}
+A_1 & \vline & A_0\\ \hline
+A_0 & \vline & A_1
+\end{pmatrix}\\
+& = \begin{pmatrix}
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0 \\
+0 & 1
+\end{matrix} \\ \hline
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1 \\
+1 & 0
+\end{matrix}
+\end{pmatrix}.
+\end{align*}
+After the second iteration, we have
+\begin{align*}
+A^{(2)} & = \begin{pmatrix}
+A_0 & \vline & A_1 & \vline & A_1 & \vline & A_0 \\ \hline
+A_1 & \vline & A_0 & \vline & A_0 & \vline & A_1 \\ \hline
+A_1 & \vline & A_0 & \vline & A_0 & \vline & A_1 \\ \hline
+A_0 & \vline & A_1 & \vline & A_1 & \vline & A_0
+\end{pmatrix} \\
+& = \begin{pmatrix}
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} \\ \hline
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix}\\ \hline
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix}\\ \hline
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix}
+\end{pmatrix}
+\end{align*}
+\end{exmp}
+
+\section{Outer Sum}
+This time, the requirements are a little less restricted. We can use a set of arbitrary many matrices $A_1, \dots, A_\ell$ that can all have arbitrary sizes and elements, \ie $A_i \in \{0, \dots, k_i\}^{n_i \times m_i}$ (However, $k_i>k^\star$ does not make much sense for the algorithm).
+
+\subsection{Preliminaries}
+In the spirit of the Kronecker Product, we define an ``\emph{outer sum}''¸ of matrices as follows: Let $A_1 \in \mathbb{R}^{n_1 \times m_1}, A_2 \in \mathbb{R}^{n_2 \times m_2}$ be two matrices. The \emph{outer sum} of $A_1$ and $A_2$ is a block matrix $B = A_1 \boxplus A_2 \in \mathbb{R}^{n_1 \cdot n_2 \times m_1 \cdot m_2}$ that consits of $n_2 \times m_2$ many blocks of size $n_1 \times m_1$.
+
+The elements of the block $B_{i_x,i_y}$ are
+\begin{align*}
+B_{i_x,i_y}\left[j_x, j_y\right] = A_1\left[j_x, j_y \right] + A_2\left[ i_x, i_y\right].
+\end{align*}
+That is, the full matrix looks as follows:
+{\tiny
+\begin{align*}
+& B = A_1 \boxplus A_2 =\\
+& \begin{pmatrix}
+\begin{matrix}
+A_1\left[1,1\right] + A_2\left[1,1\right] & \dots & A_1\left[1,m_1\right] + A_2\left[1,1\right] \\
+\vdots & \ddots & \vdots \\
+A_1\left[n_1,1\right] + A_2\left[1,1\right] & \dots & A_1\left[n_1,m_1\right] + A_2\left[1,1\right]
+\end{matrix} & \vline & \dots & \vline &
+\begin{matrix}
+A_1\left[1,1\right] + A_2\left[1,m_2\right] & \dots & A_1\left[1,m_1\right] + A_2\left[1,m_2\right] \\
+\vdots & \ddots & \vdots \\
+A_1\left[n_1,1\right] + A_2\left[1,m_2\right] & \dots & A_1\left[n_1,m_1\right] + A_2\left[1,m_2\right]
+\end{matrix}\\ \hline
+\vdots & \vline & \ddots & \vline & \vdots \\ \hline
+\begin{matrix}
+A_1\left[1,1\right] + A_2\left[n_2,1\right] & \dots & A_1\left[1,m_1\right] + A_2\left[n_2,1\right] \\
+\vdots & \ddots & \vdots \\
+A_1\left[n_1,1\right] + A_2\left[n_2,1\right] & \dots & A_1\left[n_1,m_1\right] + A_2\left[n_2,1\right]
+\end{matrix} & \vline & \dots & \vline &
+\begin{matrix}
+A_1\left[1,1\right] + A_2\left[n_2,m_2\right] & \dots & A_1\left[1,m_1\right] + A_2\left[n_2,m_2\right] \\
+\vdots & \ddots & \vdots \\
+A_1\left[n_1,1\right] + A_2\left[n_2,m_2\right] & \dots & A_1\left[n_1,m_1\right] + A_2\left[n_2,m_2\right]
+\end{matrix}
+\end{pmatrix}
+\end{align*}
+}
+
+
+\subsection{A recursive tiling step using the outer sum}
+This time, we have to start with  $A^{(0)}=A_0$ % a zero matrix of size $1 \times 1$, \ie $A^{(0)} = (0)$ 
+(alternatively, we could start with any arbitrary matrix of arbitrary size, this would add a global offset to the result).
+
+In iteration $i$ we compute $A^{(i)}$ as the outer sum of $A^{(i-1)}$ and $A_{i \text{mod} \ell}$. 
+Note that due to the summing of elements, the absolute values of the matrix elements of $B$ might exceed our maximum allowed absolute value $k^\star$.
+Therefore we apply the modulo-operation $\text{mod } (k^\star +1)$ on each element of $A^{(i)}$ afterwards. Thus, the full iteration step is
+
+\begin{align*}
+A^{(i)} = (A^{(i-1)} \boxplus A_{i \text{ mod } \ell}) \text{ mod } (k^\star +1).
+\end{align*}
+
+Note that is sufficient to apply the outer modulo only once after the last iteration.
+%Note that $\boxplus$ is \emph{not commutative}.
+
+\begin{exmp}
+We will use the same matrices from \exref{ex1}, that is 
+\begin{align*}
+A_0 = \begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix},\\
+A_1 = \begin{pmatrix}
+0 & 1\\
+1 & 0
+\end{pmatrix}
+\end{align*}
+and $A^{(0)} = A_0$. With $k^\star=2$, we have
+\begin{align*}
+A^{(1)} & = (A_0 \boxplus A_1) \text{ mod }k^\star \\
+&= \left(\begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix} \boxplus \begin{pmatrix}
+0 & 1\\
+1 & 0
+\end{pmatrix}\right) \text{ mod }2 \\
+& = \begin{pmatrix}
+\begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix} + 0 & \vline & \begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix} + 1 \\ \hline
+\begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix} + 1 & \vline & \begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix} + 0
+\end{pmatrix} \text{ mod }2 \\
+& = \begin{pmatrix}
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+2 & 1\\
+1 & 2
+\end{matrix} \\ \hline
+\begin{matrix}
+2 & 1\\
+1 & 2
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix}
+\end{pmatrix} \text{ mod }2 \\
+& = \begin{pmatrix}
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix} & \vline &
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} \\ \hline
+\begin{matrix}
+0 & 1\\
+1 & 0
+\end{matrix} & \vline &
+\begin{matrix}
+1 & 0\\
+0 & 1
+\end{matrix}
+\end{pmatrix}
+\end{align*}
+
+Note that we are free to choose a larger $k^\star$, this would yield a different result. The effect of $k^\star$ is increasing with each iteration.
+\end{exmp}
+
+
+\newpage
+\bibliography{tiling}
+
+\end{document}
