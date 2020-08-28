@@ -1,8 +1,13 @@
 #!usr/bin/python
 # -*- coding: utf-8 -*-import string
 
-import recursive_structures as rs
+import numpy as np
 
+import recursive_structures as rs
+import output
+
+### NEEDS UPDATING ANd ADJUSTING
+### WILL NOT WORK IN CURRENT STATUs
 
 # Some sets of matrices:
 A1 = np.asarray([[1,0,0],[0,0,0],[0,0,0]])
@@ -37,10 +42,24 @@ F1 = np.asarray([[1,0],[0,1]])
 F2 = np.asarray([[0,1],[1,0]])
 
 G1 = np.asarray([[1,0,0],[0,1,1],[1,1,2]])
+
+H1 = np.asarray([[1,0,0],[0,1,1],[0,0,0]])
+
+J1 = np.asarray([[1,1,1],[1,1,0],[1,0,0]])
+J2 = np.asarray([[1,1,0],[0,0,1],[0,0,1]])
+
+K1 = np.asarray([[1,1,1,1],[1,1,1,0],[1,1,0,0],[1,0,0,0]])
+K2 = np.asarray([[1,1,1,1],[1,0,0,0],[1,0,0,0],[1,0,0,1]])
+K3 = np.asarray([[1,1,1,1],[1,0,0,1],[1,0,0,1],[1,1,1,1]])
+
+L1 = np.asarray([[1,1,1,1,1],[1,1,1,1,0],[1,1,1,0,0],[1,1,0,0,0],[1,0,0,0,0]])
+L2 = np.asarray([[1,0,0,0,0],[0,1,0,0,0],[0,0,1,0,0],[0,0,0,1,0],[0,0,0,0,1]])
+L3 = np.asarray([[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0],[0,1,0,1,0],[1,0,0,0,1]])
+L4 = np.asarray([[0,0,1,0,0],[0,0,1,0,0],[1,1,1,1,1],[0,0,1,0,0],[0,0,1,0,0]])
 	
 
 if __name__ == '__main__':
 	# create images:
-	rs.run_all_auto([At1, At2, At3, At4], name='A1234', stylecode='tiles')
-	rs.run_all_auto([F1, F1, F2], name='F112', stylecode='outsum')
-	rs.run_all_auto([G1], name='G1', stylecode='outsum')
+	#rs.run_all_auto([At1, At2, At3, At4], name='A1234', stylecode='tiles')
+	#rs.run_all_auto([F1, F1, F2], name='F112', stylecode='outsum')
+	rs.run_all_auto([G1], name='G1', style=rs.EXP_OUTER_SUM)
