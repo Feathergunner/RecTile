@@ -9,20 +9,32 @@ import matplotlib.pyplot as plt
 import misc
 import colormaps as cm
 
-def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=True, col=True):
+def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=True, col=True, custom_cmap=None):
 	dirname = str(dirname)
 	if not os.path.isdir(dirname):
 		os.mkdir(dirname)
+
+	if custom_cmap:
+		cmap = custom_cmap
+		bw = False
 	if cmapdim <= 3:
 		if col:
-			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_3)
+			if not custom_cmap:
+				cmap = cm.cmap_rgb_3
+			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
 		if bw:
-			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap_gs_3)
+			if not custom_cmap:
+				cmap = cm.cmap_gs_3
+			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap)
 	elif cmapdim <= 6:
 		if col:
-			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cm.cmap_rgb_6)
+			if not custom_cmap:
+				cmap = cm.cmap_rgb_6
+			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
 		if bw:
-			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap_gs_6) 
+			if not custom_cmap:
+				cmap = cm.cmap_gs_6
+			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cmap) 
 		
 
 def upscale(R, scale):
@@ -43,7 +55,7 @@ def auto_upscale(A, n_max=2000):
 	else:
 		return upscale(A, 1+n_max//d_max)
 		
-def construct_filename(name, style, offset, offset_mode, mod, it):
+def construct_filename(name, style, mod, it, offset, offset_mode=misc.OFM_PAR):
 	if not offset == misc.OFFSET_NONE:
 		of_string = misc.ofscodes[offset]+"_"+misc.ofmmodes[offset_mode]
 	else:
