@@ -128,9 +128,9 @@ class Tiling:
 				# draw structure:
 				if not only_last_it or current_depth == depth-1:
 					if fill:
-						if current_struct.state%3 == 0:
+						if current_struct.state%3 <= 1:
 							c = 'r'
-						elif current_struct.state%3 == 1:
+						elif current_struct.state%3 > 1:
 							c = 'y'
 						else:
 							c = 'b'

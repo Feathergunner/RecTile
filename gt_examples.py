@@ -364,12 +364,12 @@ def penrose():
 	subpoints = [subpoints_bigT, subpoints_smallT, subpoints_decadon]
 	substates = [substates_bigT, substates_smallT, substates_decadon]
 	
-	t = gt.Tiling(decadon, submat, subpoints, substates)
-	t.draw(depth=6, only_last_it=True)
+	#t = gt.Tiling(decadon, submat, subpoints, substates)
+	#t.draw(depth=6, only_last_it=True)
 	
-	#for d in [4,5,6,7,8]:
-	#	t = gt.Tiling(decadon, submat, subpoints, substates)
-	#	t.draw(depth=d, only_last_it=True, filename='geometric_tilings/penrose_'+str(d)+'_c5.png', fill=True)
+	for d in [4,5,6,7]:
+		t = gt.Tiling(decadon, submat, subpoints, substates)
+		t.draw(depth=d, only_last_it=True, filename='geometric_tilings/penrose_'+str(d)+'_c.png', fill=True)
 	
 if __name__ == '__main__':
 	
