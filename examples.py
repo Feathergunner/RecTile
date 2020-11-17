@@ -5,6 +5,7 @@ import numpy as np
 
 import recursive_structures as rs
 import output
+import misc
 import colormaps as cm
 
 ### NEEDS UPDATING ANd ADJUSTING
@@ -64,4 +65,4 @@ if __name__ == '__main__':
 	#rs.run_all_auto([At1, At2, At3, At4], name='A1234', stylecode='tiles')
 	#rs.run_all_auto([F1, F1, F2], name='F112', stylecode='outsum')
 	#rs.run_all_auto([G1], name='G1', style=rs.EXP_OUTER_SUM)
-	rs.run([G1], it=5, mod=6, name='sunset', custom_cmap=cm.cmap_sunset)
+	rs.run([G1], it=4, mod=4, offset=misc.OFFSET_NONE, offset_mode=misc.OFM_ORT, name='sunset2', custom_cmap=cm.cmap_sunset2)

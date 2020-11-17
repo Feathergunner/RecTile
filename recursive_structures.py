@@ -196,7 +196,7 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 
 ### some methods that run the recursive inflation:
 
-def run(As, it, mod, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, name='', custom_cmap=None):
+def run(As, it, mod, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, offset_mode=misc.OFM_PAR, name='', custom_cmap=None):
 	### not sure if this works anymore
 	### needs testing & adjusting
 	if style not in misc.expcodes:
@@ -205,8 +205,9 @@ def run(As, it, mod, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, name='',
 	if offset not in misc.ofscodes:
 		print ("Error! Not a valid offset specified!")
 		return
-	R = recursive_inflating(As, it, mod, style=style, offset=offset)
-	output.save_as_img(R, output.construct_filename(name, style, mod, it, offset), cmapdim=mod, custom_cmap=custom_cmap)
+	R = recursive_inflating(As, it, mod, style=style, offset=offset, offset_mode=offset_mode)
+	R_scaled = output.auto_upscale(R)
+	output.save_as_img(R_scaled, output.construct_filename(name, style, mod, it, offset, offset_mode), cmapdim=mod, custom_cmap=custom_cmap)
 	
 def run_all_auto(As, name='', style=misc.EXP_OUTER_SUM):
 	### not sure if this works anymore
