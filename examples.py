@@ -59,10 +59,11 @@ L2 = np.asarray([[1,0,0,0,0],[0,1,0,0,0],[0,0,1,0,0],[0,0,0,1,0],[0,0,0,0,1]])
 L3 = np.asarray([[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0],[0,1,0,1,0],[1,0,0,0,1]])
 L4 = np.asarray([[0,0,1,0,0],[0,0,1,0,0],[1,1,1,1,1],[0,0,1,0,0],[0,0,1,0,0]])
 	
+M = np.asarray([[1,0,0,1], [0,0,1,1], [1,1,0,1], [0,0,1,2]])
 
 if __name__ == '__main__':
 	# create images:
 	#rs.run_all_auto([At1, At2, At3, At4], name='A1234', stylecode='tiles')
 	#rs.run_all_auto([F1, F1, F2], name='F112', stylecode='outsum')
 	#rs.run_all_auto([G1], name='G1', style=rs.EXP_OUTER_SUM)
-	rs.run([G1], it=4, mod=4, offset=misc.OFFSET_NONE, offset_mode=misc.OFM_ORT, name='sunset2', custom_cmap=cm.cmap_sunset2)
+	rs.run_all_offsets([M], it=3, mod=3, name='gold_M', custom_cmap=cm.cmap_gold)

@@ -195,10 +195,7 @@ def recursive_inflating(As, it, mod=3, style=misc.EXP_OUTER_SUM, offset=misc.OFF
 	return R_ret
 
 ### some methods that run the recursive inflation:
-
 def run(As, it, mod, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, offset_mode=misc.OFM_PAR, name='', custom_cmap=None):
-	### not sure if this works anymore
-	### needs testing & adjusting
 	if style not in misc.expcodes:
 		print ("Error! Not a valid style specified!")
 		return
@@ -208,8 +205,13 @@ def run(As, it, mod, style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, offset_m
 	R = recursive_inflating(As, it, mod, style=style, offset=offset, offset_mode=offset_mode)
 	R_scaled = output.auto_upscale(R)
 	output.save_as_img(R_scaled, output.construct_filename(name, style, mod, it, offset, offset_mode), cmapdim=mod, custom_cmap=custom_cmap)
+
+def run_all_offsets(As, it, mod, style=misc.EXP_OUTER_SUM, name='', custom_cmap=None):
+	for offset in misc.ofscodes:
+		for offset_mode in misc.ofmmodes:
+			run(As, it, mod, style=style, offset=offset, offset_mode=offset_mode, name=name, custom_cmap=custom_cmap)
 	
-def run_all_auto(As, name='', style=misc.EXP_OUTER_SUM):
+def run_all_auto(As, name='', style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE):
 	### not sure if this works anymore
 	### needs testing & adjusting
 	d_max = np.max([A.shape for A in As])

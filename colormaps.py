@@ -36,7 +36,6 @@ fire = [[1.0,0.0, 0.0],		# red
 
 cmap_fire = cls.LinearSegmentedColormap.from_list('fire', fire, N=6)
 
-
 sunset1 = [[0.0, 0.0, 1.0],	# blue
 		[0.5, 0.0, 0.4],	# purple
 		[1.0,0.0, 0.0],		# red
@@ -53,3 +52,9 @@ sunset2 = [[0.9, 0.6, 0.0],
 		   [0.9, 0.0, 0.2]]
 
 cmap_sunset2 = cls.LinearSegmentedColormap.from_list('sunset2', sunset2, N=4)
+
+gold = [[0.2, 0.0, 0.3],	# dark blueish purple
+		[1.0, 0.85, 0.0], # golden yellow
+		[1.0, 0.2, 0.0]]  # reddish orange
+
+cmap_gold = cls.LinearSegmentedColormap.from_list('gold', gold, N=3)
