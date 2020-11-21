@@ -64,11 +64,14 @@ M = np.asarray([[1,0,0,1], [0,0,1,1], [1,1,0,1], [0,0,1,2]])
 N1 = np.asarray([[0,0,1],[1,0,1],[2,1,0]])
 N2 = np.asarray([[1,0,0],[0,1,0],[0,0,1]])
 N3 = np.asarray([[1,0,1],[0,1,0],[1,0,1]])
+N4 = np.asarray([[0,1,0],[1,0,1],[0,1,0]])
+N5 = np.asarray([[0,1,0],[1,0,1],[0,0,0]])
+
 
 if __name__ == '__main__':
 	# create images:
 	#rs.run_all_auto([At1, At2, At3, At4], name='A1234', stylecode='tiles')
 	#rs.run_all_auto([F1, F1, F2], name='F112', stylecode='outsum')
 	#rs.run_all_auto([G1], name='G1', style=rs.EXP_OUTER_SUM)
-	#rs.run_all_offsets([N3], it=4, mod=3, name='N3')#, custom_cmap=cm.cmap_gold)
-	rs.run([N3], it=4, mod=3, name="N3_gold", style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_BLOCK, offset_mode=misc.OFM_ORT, custom_cmap=cm.cmap_gold)
+	rs.run_all_offsets([N5], it=4, mod=3, name='N5', custom_cmap=cm.cmap_gold)
+	#rs.run([N3, N4], it=4, mod=3, name="N3_gold", style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_BLOCK, offset_mode=misc.OFM_ORT, custom_cmap=cm.cmap_gold)

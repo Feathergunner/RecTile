@@ -15,7 +15,7 @@ def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=False, col=Tr
 		os.mkdir(dirname)
 
 	if custom_cmap:
-		plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=custom_cmap) 
+		plt.imsave(dirname+'/'+filename+'.png', A, cmap=custom_cmap) 
 		
 	else:
 		if cmapdim <= 3:
