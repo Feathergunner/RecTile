@@ -9,33 +9,30 @@ import matplotlib.pyplot as plt
 import misc
 import colormaps as cm
 
-def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=True, col=True, custom_cmap=None):
+def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=False, col=True, custom_cmap=None):
 	dirname = str(dirname)
 	if not os.path.isdir(dirname):
 		os.mkdir(dirname)
 
 	if custom_cmap:
-		cmap = custom_cmap
-		bw = False
-	if cmapdim <= 3:
-		if col:
-			if not custom_cmap:
-				cmap = cm.cmap_rgb_3
-			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
-		if bw:
-			if not custom_cmap:
-				cmap = cm.cmap_gs_3
-			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cm.cmap)
-	elif cmapdim <= 6:
-		if col:
-			if not custom_cmap:
-				cmap = cm.cmap_rgb_6
-			plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
-		if bw:
-			if not custom_cmap:
-				cmap = cm.cmap_gs_6
-			plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cmap) 
+		plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=custom_cmap) 
 		
+	else:
+		if cmapdim <= 3:
+			if col:
+				cmap = cm.cmap_rgb_3
+				plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
+			if bw:
+				cmap = cm.cmap_gs_3
+				plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
+		elif cmapdim <= 6:
+			if col:
+				cmap = cm.cmap_rgb_6
+				plt.imsave(dirname+'/'+filename+'_rgb.png', A, cmap=cmap)
+			if bw:
+				cmap = cm.cmap_gs_6
+				plt.imsave(dirname+'/'+filename+'_gs.png', A, cmap=cmap) 
+
 
 def upscale(R, scale):
 	d_x, d_y = R.shape
