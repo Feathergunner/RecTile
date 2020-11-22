@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import misc
 import colormaps as cm
 
-def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=False, col=True, custom_cmap=None):
+def save_as_img(A, filename="tiling", cmapdim=3, dirname='img', bw=True, col=True, custom_cmap=None):
 	dirname = str(dirname)
 	if not os.path.isdir(dirname):
 		os.mkdir(dirname)

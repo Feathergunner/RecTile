@@ -42,6 +42,10 @@ E4 = np.asarray([[0,1],[1,1]])
 
 F1 = np.asarray([[1,0],[0,1]])
 F2 = np.asarray([[0,1],[1,0]])
+F3 = np.asarray([[0,1,0],[1,0,1]])
+F4 = np.asarray([[0,1],[1,0],[0,1]])
+F5 = np.asarray([[1,0],[0,1],[1,0]])
+F6 = np.asarray([[1,0,1],[0,1,0]])
 
 G1 = np.asarray([[1,0,0],[0,1,1],[1,1,2]])
 
@@ -78,5 +82,6 @@ if __name__ == '__main__':
 	#rs.run_all_auto([At1, At2, At3, At4], name='A1234', stylecode='tiles')
 	#rs.run_all_auto([F1, F1, F2], name='F112', stylecode='outsum')
 	#rs.run_all_auto([G1], name='G1', style=rs.EXP_OUTER_SUM)
-	#rs.run_all_offsets([M3], it=3, mod=5, name='M3_dark', custom_cmap=cm.cmap_dark)
-	rs.run([M4, M4, M4, Z4], it=3, mod=4, name="M444Z_dark", style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_BLOCK, offset_mode=misc.OFM_ORT, custom_cmap=cm.cmap_dark)
+	rs.run_all_offsets([F3, F2, F1, F1, F6, F1, F1, F4], it=7, mod=4, name="F32116114_clouds", custom_cmap=cm.cmap_clouds)
+	#rs.run([F1, F2, F1, F1, F2], it=8, mod=4, name="F12112", style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_BLOCK, offset_mode=misc.OFM_ORT)#, custom_cmap=cm.cmap_dark)
+	#rs.run([F3, F2, F1, F1, F5, F1, F1, F3], it=7, mod=4, name="F32115113_dark2", style=misc.EXP_OUTER_SUM, offset=misc.OFFSET_NONE, custom_cmap=cm.cmap_dark2)

@@ -54,8 +54,29 @@ dark = [[0.0, 0.0, 0.0],
 
 cmap_dark = cls.LinearSegmentedColormap.from_list('dark', dark, N=5)
 
+dark2 = [[0.0, 0.0, 0.8],
+		[0.0, 0.0, 0.0],
+		[0.0, 0.0, 0.8],
+		[1.0, 0.0, 0.0],
+		[0.9, 0.9, 0.0]]
+
+cmap_dark2 = cls.LinearSegmentedColormap.from_list('dark', dark2, N=5)
+
 gold = [[0.2, 0.0, 0.3],	# dark blueish purple
 		[1.0, 0.85, 0.0], # golden yellow
 		[1.0, 0.2, 0.0]]  # reddish orange
 
 cmap_gold = cls.LinearSegmentedColormap.from_list('gold', gold, N=3)
+
+gold2 = [[1.0, 0.85, 0.0], # golden yellow
+		[0.2, 0.0, 0.3],	# dark blueish purple
+		[1.0, 0.2, 0.0]]  # reddish orange
+
+cmap_gold2 = cls.LinearSegmentedColormap.from_list('gold2', gold2, N=3)
+
+clouds = [[0.0, 0.0, 0.9],
+		[0.4, 0.4, 1.0],
+		[0.9, 0.9, 1.0],
+		[1.0, 1.0, 1.0]]
+
+cmap_clouds = cls.LinearSegmentedColormap.from_list('clouds', clouds, N=4)
