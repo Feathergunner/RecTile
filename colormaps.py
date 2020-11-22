@@ -46,12 +46,13 @@ sunset1 = [[0.0, 0.0, 1.0],	# blue
 
 cmap_sunset1 = cls.LinearSegmentedColormap.from_list('sunset1', sunset1, N=6)
 
-sunset2 = [[0.9, 0.6, 0.0],
-		   [0.8, 0.8, 1.0],
-		   [0.0, 0.0, 1.0],
-		   [0.9, 0.0, 0.2]]
+dark = [[0.0, 0.0, 0.0],
+		[0.0, 0.8, 0.0],
+		[0.0, 0.0, 0.8],
+		[0.8, 0.0, 0.0],
+		[0.9, 0.9, 0.0]]
 
-cmap_sunset2 = cls.LinearSegmentedColormap.from_list('sunset2', sunset2, N=4)
+cmap_dark = cls.LinearSegmentedColormap.from_list('dark', dark, N=5)
 
 gold = [[0.2, 0.0, 0.3],	# dark blueish purple
 		[1.0, 0.85, 0.0], # golden yellow
