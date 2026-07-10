@@ -4,7 +4,7 @@ Creating (hopefully) nice images with recursive algorithms.
 ## Examples
 <!--- [Example 1](img/outsum_F112_mod4_it9_rgb.png)
 [Example 3](img/tiles_A1234_mod4_it5_rgb.png) -->
-[Example](example.png)
+![Example](example.png)
 
 
 ## Description:
