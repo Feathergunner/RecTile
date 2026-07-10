@@ -18,6 +18,15 @@ The basic ideas are presented here, see `tiling.pdf` for more detailed descripti
 ### Outer sum:
 - This algorithm applies a variant of the [Kroenecker Product](https://en.wikipedia.org/wiki/Kronecker_product) in each step, but instead of multiplying, it adds modulo a maximum number.
 
+## Requirements:
+Code is written in Python 3, using the following packages:
+- numpy
+- math
+- random
+- queue
+- os
+- matplotlib
+
 ## Running:
 Run `basic_examples.py` to see all possible combinations of settings.
 
